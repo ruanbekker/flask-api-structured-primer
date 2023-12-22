@@ -11,6 +11,7 @@ Structured Flask API with SQLAlchemy, Swagger, Unit Tests, CodeCoverage, etc
   - [Code Coverage](#code-coverage)
   - [Running tests with Docker](#running-tests-with-docker)
 - [Database Migrations](#database-migrations)
+- [API Documentation](#swagger-api-documentation)
 
 ## Getting started
 
@@ -352,3 +353,8 @@ The database versioning directory structure:
 
 Resources:
 - [Database Migrations with Flask](https://code.likeagirl.io/database-migrations-in-python-with-flask-with-alembic-442d11eb14d3)
+
+## Swagger API Documentation
+
+Swagger Documentation is available at:
+- http://localhost:5000/apidocs/

@@ -1,16 +1,35 @@
 from flask import Blueprint, jsonify, request
+from flasgger import Swagger, swag_from
 from services.product_service import ProductService
 from shared.logging_utils import get_logger
 
 # Get an instance of a logger
 logger = get_logger(__name__)
 
+# Initialize Blueprint
 product_blueprint = Blueprint('product_blueprint', __name__)
+
+# Initialize Swagger
+swagger = Swagger()
+
 """
 Blueprint for managing product-related routes.
 """
 
 @product_blueprint.route('/products', methods=['GET'])
+@swag_from({
+    'tags': ['Products'],
+    'description': 'Retrieve all products.',
+    'responses': {
+        '200': {
+            'description': 'List of products',
+            'schema': {
+                'type': 'array',
+                'items': {'$ref': '#/definitions/Product'}
+            }
+        }
+    }
+})
 def get_products():
     """
     Retrieve all products.

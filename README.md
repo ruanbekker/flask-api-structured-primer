@@ -9,6 +9,7 @@ Structured Flask API with SQLAlchemy, Swagger, Unit Tests, CodeCoverage, etc
   - [Static Code Analysis](#static-code-analysis)
   - [Unit Tests](#unit-tests)
   - [Code Coverage](#code-coverage)
+  - [Running tests with Docker](#running-tests-with-docker)
 - [Database Migrations](#database-migrations)
 
 ## Getting started
@@ -89,6 +90,7 @@ This is the directory structure:
 - static code analysis (pylint, prospector, bandit)
 - unit tests (unittest)
 - code coverage (coverage)
+- optional: using docker to run all at once
 
 ### Static Code Analysis
 
@@ -299,6 +301,14 @@ TOTAL                             220     16    93%
 ```
 
 </details>
+
+### Running tests with docker
+
+Tests can be run as instructed above or can be run all at once using docker:
+
+```bash
+make test-docker
+```
 
 ## Database Migrations
 

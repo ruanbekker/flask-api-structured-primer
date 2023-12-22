@@ -41,7 +41,8 @@ make requests-retrieve
 
 ## Directory Structure
 
-This is the directory structure:
+<details>
+  <summary>Tree view of the directory structure:</summary>
 
 ```bash
 ├── Dockerfile
@@ -84,6 +85,8 @@ This is the directory structure:
 
 12 directories, 25 files
 ```
+
+</details>
 
 ## Tests
 

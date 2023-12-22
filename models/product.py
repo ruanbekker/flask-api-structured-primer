@@ -1,4 +1,3 @@
-from flasgger import Swagger
 from database.db import db
 
 class Product(db.Model):
@@ -43,15 +42,3 @@ class Product(db.Model):
         """
         return f'<Product {self.name}>'
 
-# Use @swagger.definition to define the model schema
-swagger = Swagger()
-@swagger.definition('Product')
-class ProductSwagger:
-    properties = {
-        'id': {'type': 'integer'},
-        'name': {'type': 'string'},
-        'description': {'type': 'string'},
-        'price': {'type': 'number'},
-        'inventory': {'type': 'integer'}
-    }
-    required = ['id', 'name', 'description', 'price', 'inventory']

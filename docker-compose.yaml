@@ -6,7 +6,8 @@ services:
       context: .
     container_name: product-service
     environment:
-      - DATABASE_URL=mysql+mysqlconnector://ruan:password@mysql/ecomdb
+      - DATABASE_URL=mysql+mysqlconnector://ruan:password@mysql/product_db
+      - LOG_LEVEL=DEBUG
     ports:
       - 5000:5000
     networks:

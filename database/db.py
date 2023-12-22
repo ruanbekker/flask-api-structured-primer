@@ -1,9 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
-"""
-The SQLAlchemy object for database management.
-"""
+"""The SQLAlchemy object for database management."""
 
 def reset_database():
     """

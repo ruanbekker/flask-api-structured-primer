@@ -1,6 +1,9 @@
 # Define the shell to use for running commands
 SHELL := /bin/bash
 
+# Check for docker-compose or docker compose availability
+DOCKER_COMPOSE_CMD := $(shell which docker-compose || echo "docker compose")
+
 # Define the path to the virtual environment
 VENV := /tmp/.venv
 REQS := requirements.txt
@@ -18,16 +21,34 @@ CYAN := $$(tput setaf 6)
 GRAY := $$(tput setaf 7)
 RESET := $$(tput sgr0)
 
-# This declaration tells make that list is not a file but a 
+# This declaration tells make that help is not a file but a 
 # label for a set of commands to execute.
-.PHONY: list
+.PHONY: help
 
-.DEFAULT_GOAL := list
+.DEFAULT_GOAL := help
+
+## Show this help message
+help:
+	@echo "Available targets:"
+	@awk '/^[a-zA-Z_-]+:/ { \
+		helpMessage = match(lastLine, /^## (.*)/); \
+		if (helpMessage) { \
+			helpCommand = substr($$1, 1, length($$1)-1); \
+			helpMessage = substr(lastLine, RSTART + 3, RLENGTH); \
+			printf "%-30s\t%s\n", helpCommand, helpMessage; \
+		} \
+	} \
+	{ lastLine = $$0 }' $(MAKEFILE_LIST) | while IFS=$$'\t' read -r command desc; do \
+		echo "$(BLUE)$$command$(RESET)$(YELLOW)$$desc$(RESET)"; \
+	done
+	
+## Show the list of targets
 
 list:
 	@echo "$(BLUE)Available targets:$(RESET)"
 	@awk '/^[a-zA-Z_-]+:/ {print $$1}' $(MAKEFILE_LIST) | sed 's/://' | grep -vE '^\.PHONY|list' | sort
 
+## Initializes a python virtual environment
 init:
 	@( \
 		echo "$(GREEN)Creating virtual environment...$(RESET)" ; \
@@ -38,6 +59,7 @@ init:
 		echo "$(GREEN)Environment setup complete.$(RESET)" ; \
 	)
 
+## Run local tests
 test:
 	# Check if the virtual environment exists, run 'lint' if it does not
 	@if [ ! -d "$(VENV)" ]; then \
@@ -65,34 +87,41 @@ test:
 		coverage report --rcfile $(PYCODECOVERAGE_RC) ; \
 	)
 
+## Run tests using docker
 test-docker:
 	@echo "$(GREEN)Running tests with docker $(RESET)"
-	docker compose -f docker-compose-jobs.yaml up --build
+	$(DOCKER_COMPOSE_CMD) -f docker-compose-jobs.yaml up --build
 
+## Builds docker containers
 build:
 	@echo "$(GREEN)Building with docker...$(RESET)"
-	docker-compose build
+	$(DOCKER_COMPOSE_CMD) build
 
 up:
 	@echo "$(GREEN)Starting containers with docker...$(RESET)"
-	docker-compose up --build -d
+	$(DOCKER_COMPOSE_CMD) up --build -d
 
+## Tail log files with docker
 logs:
 	@echo "$(YELLOW)Tailing logs with docker...$(RESET)"
-	docker-compose logs -f
+	$(DOCKER_COMPOSE_CMD) logs -f
 
+## Stop and remove docker containers
 teardown:
 	@echo "$(RED)Deleting containers...$(RESET)"
-	docker-compose down
+	$(DOCKER_COMPOSE_CMD) down
 
+## Runs POST requests
 requests-create:
 	@echo "$(GREEN)Making HTTP POST Requests...$(RESET)"
 	bash _scripts/http/create.sh
 
+## Runs GET requests
 requests-retrieve:
 	@echo "$(GREEN)Making HTTP GET Requests...$(RESET)"
 	bash _scripts/http/get.sh
 
+## Clean the pycache directories
 clean:
 	@echo "$(RED)Deleting pycache directories$(RESET)"
 	find . -type d -name '__pycache__' -exec rm -rf {} +

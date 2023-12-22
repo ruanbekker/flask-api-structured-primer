@@ -5,3 +5,7 @@ Werkzeug==2.2.2
 mysql-connector-python==8.2.0
 Flask-Migrate==4.0.5
 pytest==7.4.3
+coverage==7.3.2
+bandit==1.7.5
+pylint==3.0.2
+prospector[with_bandit]

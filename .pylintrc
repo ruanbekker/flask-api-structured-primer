@@ -1,8 +1,12 @@
 [MASTER]
+init-hook='import sys; sys.path.append(".")'
 disable=
     C0114, # missing-module-docstring
+    W0105, # pointless-string-statement
+    W0212, # protected-access
     W0611, # unused-import
     W0612, # unused-variable
     R0205, # useless-object-inheritance
     R0903, # too-few-public-methods
-    R1710, #inconsistent-return-statements
+    R1710, # inconsistent-return-statements
+    R1705, # no-else-return

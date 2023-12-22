@@ -1,0 +1,5 @@
+[run]
+source = .
+omit =
+    */__pycache__/*
+    */venv/*  # If you have a virtual environment directory

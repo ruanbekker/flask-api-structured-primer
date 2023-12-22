@@ -1,0 +1,41 @@
+---
+autodetect: false
+# bandit: {}
+doc-warnings: true
+ignore-paths: []
+ignore-patterns: []
+
+#output-format: text # json, yaml, pylint
+
+strictness: medium
+test-warnings: true
+uses:
+    - flask
+
+pydocstyle:
+  disable:
+    - D200 # One-line docstring should fit on one line with quotes
+    - D203 # 1 blank line required before class docstring
+    - D212
+    - D406 # Section name should end with a newline
+    - D407 # Missing dashed underline
+    - D413
+  options:
+    max-line-length: 90
+
+pylint:
+  disable:
+  - C0324
+  - C0114 # missing-module-docstring
+  - W0105 # pointless-string-statement
+  - W0212 # protected-access
+  - W0611 # unused-import
+  - W0612 # unused-variable
+  - R0205 # useless-object-inheritance
+  - R0903 # too-few-public-methods
+  - R1710 # inconsistent-return-statements
+  - R1705 # no-else-return
+  enable: []
+
+mccabe:
+  run: false

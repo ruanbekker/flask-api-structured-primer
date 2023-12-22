@@ -9,8 +9,15 @@ Structured Flask API with SQLAlchemy, Swagger, Unit Tests, CodeCoverage, etc
   - [Static Code Analysis](#static-code-analysis)
   - [Unit Tests](#unit-tests)
   - [Code Coverage](#code-coverage)
+- [Database Migrations](#database-migrations)
 
-## Getting Started
+## Getting started
+
+To view the makefile targets:
+
+```bash
+make
+```
 
 Local testing:
 
@@ -21,10 +28,15 @@ make test
 Docker:
 
 ```bash
-docker compose up --build -d
+make up
 ```
 
-Scripts is under `_scripts/`
+Scripts is under `_scripts/` or you can use the makefile targets:
+
+```bash
+make requests-create
+make requests-retrieve
+```
 
 ## Directory Structure
 
@@ -44,12 +56,19 @@ This is the directory structure:
 │   ├── migrations
 │   │   └── db_migrations.sh
 │   └── tests
+│       ├── lint.sh
 │       └── unit_tests.sh
 ├── app.py
 ├── config.py
 ├── database
 │   └── db.py
 ├── docker-compose.yaml
+├── migrations
+│   ├── README
+│   ├── alembic.ini
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions
 ├── models
 │   └── product.py
 ├── requirements.txt
@@ -62,7 +81,7 @@ This is the directory structure:
 └── views
     └── product_views.py
 
-10 directories, 20 files
+12 directories, 25 files
 ```
 
 ## Tests
@@ -227,6 +246,7 @@ OK
 
 </details>
 
+
 ### Code Coverage
 
 Run code coverage:
@@ -279,3 +299,43 @@ TOTAL                             220     16    93%
 ```
 
 </details>
+
+## Database Migrations
+
+This application uses the [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/) extension for a [Alembic](https://alembic.sqlalchemy.org/en/latest/) migration environment.
+
+<details>
+  <summary>To run database migrations:</summary>
+
+Setting the environment:
+
+```bash
+export FLASK_APP=app:create_app
+export FLASK_ENV=development
+```
+
+Running the database migrations
+
+```bash
+flask db init
+flask db migrate -m "Initial db migration"
+flask db upgrade
+```
+
+The database versioning directory structure:
+
+```bash
+├── migrations
+│   ├── README
+│   ├── alembic.ini
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions
+├── models
+│   └── product.py
+```
+
+</details>
+
+Resources:
+- [Database Migrations with Flask](https://code.likeagirl.io/database-migrations-in-python-with-flask-with-alembic-442d11eb14d3)

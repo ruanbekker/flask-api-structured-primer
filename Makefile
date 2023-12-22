@@ -65,7 +65,30 @@ test:
 		coverage report --rcfile $(PYCODECOVERAGE_RC) ; \
 	)
 
+build:
+	@echo "$(GREEN)Building with docker...$(RESET)"
+	docker-compose build
+
+up:
+	@echo "$(GREEN)Starting containers with docker...$(RESET)"
+	docker-compose up --build -d
+
+logs:
+	@echo "$(YELLOW)Tailing logs with docker...$(RESET)"
+	docker-compose logs -f
+
+teardown:
+	@echo "$(RED)Deleting containers...$(RESET)"
+	docker-compose down
+
+requests-create:
+	@echo "$(GREEN)Making HTTP POST Requests...$(RESET)"
+	bash _scripts/http/create.sh
+
+requests-retrieve:
+	@echo "$(GREEN)Making HTTP GET Requests...$(RESET)"
+	bash _scripts/http/get.sh
+
 clean:
-	# Removes __pycache__ directories
-	echo "$(RED)Deleting pycache directories$(RESET)"
+	@echo "$(RED)Deleting pycache directories$(RESET)"
 	find . -type d -name '__pycache__' -exec rm -rf {} +

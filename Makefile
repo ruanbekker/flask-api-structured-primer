@@ -65,6 +65,10 @@ test:
 		coverage report --rcfile $(PYCODECOVERAGE_RC) ; \
 	)
 
+test-docker:
+	@echo "$(GREEN)Running tests with docker $(RESET)"
+	docker compose -f docker-compose-jobs.yaml up --build
+
 build:
 	@echo "$(GREEN)Building with docker...$(RESET)"
 	docker-compose build

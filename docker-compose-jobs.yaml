@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  tests:
+    build:
+      context: .
+    restart: "no"
+    environment:
+      - SQLALCHEMY_DATABASE_URI='sqlite:///:memory:'
+      - LOG_LEVEL=DEBUG
+    command:
+      - sh
+      - -c 
+      - |
+        echo "[PYLINT]"
+        find . -name "*.py" ! -path "./migrations/*" -exec pylint --rcfile .pylintrc --verbose {} +
+        echo "[PROSPECTOR]"
+        # prospector --profile .prospector.yaml
+        echo "[BANDIT]"
+        bandit -r . -ll -x ./venv
+        echo "[UNITTESTS]"
+        python3 -m unittest discover -s tests --verbose
+        echo "[CODECOVERAGE]"
+        coverage run --rcfile .coveragerc -m unittest discover -s tests
+        coverage report --rcfile .coveragerc
+        exit 0

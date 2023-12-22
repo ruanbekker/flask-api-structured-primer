@@ -13,22 +13,6 @@ class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
-class SwaggerConfig:
-    """Configuration class for Swagger."""
-    TITLE = "Product Service API"
-    SPECS = [
-        {
-            "version": "1.0",
-            "title": TITLE,
-            "endpoint": "apispec_1",
-            "route": "/apispec_1.json"
-        }
-    ]
-    HEADERS = []
-    STATIC_URL_PATH = "/flasgger_static"
-    SWAGGER_UI = True
-    SPECS_ROUTE = "/apidocs/"
-
 class DevelopmentConfig(Config):
     """
     Configuration class for dev.

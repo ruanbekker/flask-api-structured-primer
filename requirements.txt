@@ -10,3 +10,4 @@ bandit>=1.7.5
 pylint>=3.0.0
 prospector>=1.7.0
 flasgger>=0.9.0
+PyYAML>=6.0.0

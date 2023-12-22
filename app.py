@@ -1,5 +1,6 @@
 """Product Service."""
 import os
+import yaml
 from flask import Flask
 from flask_migrate import Migrate
 from flasgger import Swagger
@@ -40,15 +41,11 @@ def create_app(config_class=Config):
     # Register routes
     app.register_blueprint(product_blueprint, url_prefix='/api')
 
+    # Load Swagger YAML file
+    with open('swagger/swagger_definitions.yaml', 'r') as f:
+        swagger_template = yaml.safe_load(f.read())
+    
     # Initialize Swagger
-    swagger = Swagger(config={
-        "title": SwaggerConfig.TITLE,
-        "specs": SwaggerConfig.SPECS,
-        "headers": SwaggerConfig.HEADERS,
-        "static_url_path": SwaggerConfig.STATIC_URL_PATH,
-        "swagger_ui": SwaggerConfig.SWAGGER_UI,
-        "specs_route": SwaggerConfig.SPECS_ROUTE,
-    })
-    swagger.init_app(app)
+    Swagger(app, template=swagger_template)
 
     return app

@@ -12,8 +12,10 @@ class ProductService:
         Add a new product to the database.
 
         :param data: A dictionary containing product data.
+        :type data: dict
 
         :return: A dictionary representing the added product.
+        :rtype: dict
         """
         product = Product(
             name=data['name'],

@@ -356,5 +356,7 @@ Resources:
 
 ## Swagger API Documentation
 
+Swagger has been implemented with [Flasggr](https://github.com/flasgger/flasgger)
+
 Swagger Documentation is available at:
 - http://localhost:5000/apidocs/

@@ -9,3 +9,4 @@ coverage>=7.3.2
 bandit>=1.7.5
 pylint>=3.0.0
 prospector>=1.7.0
+flasgger>=0.9.0

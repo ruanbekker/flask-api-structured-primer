@@ -2,6 +2,7 @@ import os
 
 class Config(object):
     """Base configuration class."""
+
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
                               'mysql+mysqlconnector://user:password@localhost/product_db'

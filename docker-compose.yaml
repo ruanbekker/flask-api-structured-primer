@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  product-service:
+    build:
+      context: .
+    container_name: product-service
+    environment:
+      - DATABASE_URL=mysql+mysqlconnector://ruan:password@mysql/ecomdb
+    ports:
+      - 5000:5000
+    networks:
+      - contained
+    depends_on:
+      mysql:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+  
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=ruan
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=ecomdb
+    healthcheck:
+      test: ["CMD", "mysql" ,"-h", "mysql", "-P", "3306", "-u", "root", "-prootpassword", "-e", "SELECT VERSION()"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks:
+      - contained
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+networks:
+  contained:
+    name: contained

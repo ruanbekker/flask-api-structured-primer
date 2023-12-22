@@ -1,5 +1,4 @@
 import unittest
-import json
 from app import create_app
 from database.db import db
 from config import TestConfig
@@ -9,9 +8,11 @@ from services.product_service import ProductService
 class ProductModelTestCase(unittest.TestCase):
     """
     Test cases for the Product model.
-    Testing Product Model Behavior, tests to ensure that 
+
+    Testing Product Model Behavior, tests to ensure that
     it is storing and returning data correctly
     """
+
     def setUp(self):
         """
         Set up the test environment before each test.
@@ -51,8 +52,10 @@ class ProductModelTestCase(unittest.TestCase):
 class ProductServiceTestCase(unittest.TestCase):
     """
     Test cases for the ProductService class.
+
     Testing API Endpoints
     """
+
     def setUp(self):
         """
         Set up the test environment before each test.
@@ -135,8 +138,10 @@ class ProductServiceLayerTestCase(unittest.TestCase):
     Test cases for the ProductService class methods.
 
     Service Layer Logic Tests:
-    ProductService class methods should be tested to ensure they handle logic correctly
+        ProductService class methods should be tested to ensure they
+        handle logic correctly.
     """
+
     def setUp(self):
         """
         Set up the test environment before each test.
@@ -175,6 +180,7 @@ class ProductServiceLayerTestCase(unittest.TestCase):
         # Further, we can check if the product was indeed added to the database.
         added_product = Product.query.filter_by(name='Service Test Product').first()
         self.assertIsNotNone(added_product)
+
 
 if __name__ == '__main__':
     unittest.main()

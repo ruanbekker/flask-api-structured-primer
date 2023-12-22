@@ -11,6 +11,7 @@ class Product(db.Model):
         price (float): The price of the product.
         inventory (int): The inventory of the product.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True, unique=True)
     description = db.Column(db.String(1024))
@@ -22,7 +23,7 @@ class Product(db.Model):
         Convert the product object to a dictionary.
 
         Returns:
-        dict: A dictionary representing the product.
+            dict: A dictionary representing the product.
         """
         return {
             'id': self.id,
@@ -37,6 +38,6 @@ class Product(db.Model):
         Return a string representation of the product.
 
         Returns:
-        str: A string representation of the product.
+            str: A string representation of the product.
         """
         return f'<Product {self.name}>'

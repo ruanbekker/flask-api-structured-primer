@@ -11,11 +11,9 @@ class ProductService:
         """
         Add a new product to the database.
 
-        Parameters:
-        data (dict): A dictionary containing product data.
+        :param data: A dictionary containing product data.
 
-        Returns:
-        dict: A dictionary representing the added product.
+        :return: A dictionary representing the added product.
         """
         product = Product(
             name=data['name'],
@@ -32,8 +30,8 @@ class ProductService:
         """
         Retrieve all products from the database.
 
-        Returns:
-        list: A list of dictionaries, each representing a product.
+        :return: A list of dictionaries, each representing a product.
+        :rtype: list
         """
         return [product.to_dict() for product in Product.query.all()]
 
@@ -42,11 +40,10 @@ class ProductService:
         """
         Retrieve a specific product from the database.
 
-        Parameters:
-        product_id (int): The ID of the product to retrieve.
+        :param product_id: The ID of the product to retrieve.
 
-        Returns:
-        dict or None: A dictionary representing the product if found, else None.
+        :return: A dictionary representing the product if found, else None.
+        :rtype: dict or None
         """
         # product = Product.query.get(product_id) # v1
         # product = db.session.get(Product, product_id) # v2
@@ -58,12 +55,11 @@ class ProductService:
         """
         Update a product in the database.
 
-        Parameters:
-        product_id (int): The ID of the product to update.
-        data (dict): A dictionary containing the updated product data.
+        :param product_id: The ID of the product to update.
+        :param data: A dictionary containing the updated product data.
 
-        Returns:
-        dict: A dictionary representing the updated product.
+        :return: A dictionary representing the updated product.
+        :rtype: dict
         """
         product = db.session.get(Product, product_id)
         if not product:
@@ -82,11 +78,10 @@ class ProductService:
         """
         Delete a product from the database.
 
-        Parameters:
-        product_id (int): The ID of the product to delete.
+        :param product_id: The ID of the product to delete.
 
-        Returns:
-        bool: True if the product is successfully deleted.
+        :return: True if the product is successfully deleted.
+        :rtype: bool
         """
         product = db.session.get(Product, product_id)
         if not product:

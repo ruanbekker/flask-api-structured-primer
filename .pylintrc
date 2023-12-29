@@ -1,6 +1,7 @@
 [MASTER]
 init-hook='import sys; sys.path.append(".")'
 disable=
+    C0103, # invalid-name
     C0114, # missing-module-docstring
     W0105, # pointless-string-statement
     W0212, # protected-access

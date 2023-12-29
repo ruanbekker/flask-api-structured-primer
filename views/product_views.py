@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flasgger import Swagger, swag_from
+from flasgger import Swagger
 from services.product_service import ProductService
 from shared.logging_utils import get_logger
 
@@ -39,9 +39,8 @@ def get_products():
 @product_blueprint.route('/product/<int:product_id>', methods=['GET'])
 def get_product(product_id):
     """
-    Retrieve a specific product.
-
     Retrieve a specific product by ID.
+
     ---
     tags:
       - Products

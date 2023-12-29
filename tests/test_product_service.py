@@ -1,9 +1,85 @@
+import os
 import unittest
 from app import create_app
 from database.db import db
 from config import TestConfig
 from models.product import Product
 from services.product_service import ProductService
+
+class AppConfigTestCase(unittest.TestCase):
+    """
+    Test case for the application's configuration and initialization process.
+
+    This test case ensures that the Flask application correctly loads the appropriate
+    configuration settings based on the `FLASK_ENV` environment variable. It tests
+    for different environments including development, production, and the default
+    configuration.
+    """
+
+    def setUp(self):
+        """
+        Set up method for the test case.
+
+        This method can be used to set up any pre-requisites or common setup
+        tasks that are necessary before each test is executed. Currently, this
+        method does not perform any setup but can be modified as needed.
+        """
+        self.app = create_app(TestConfig)
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+
+    def tearDown(self):
+        """
+        Tear down method for the test case.
+
+        This method is executed after each test method to clean up or reset
+        any changes made during the test. It can be used to reset environment
+        variables or other cleanup tasks.
+        """
+        self.app_context.pop()
+
+    def test_development_config(self):
+        """
+        Test to ensure that the application loads the development configuration.
+
+        This test sets the `FLASK_ENV` environment variable to 'development' and
+        then initializes the application. It asserts that the application's configuration
+        is correctly set for the development environment.
+        """
+        os.environ['FLASK_ENV'] = 'development'
+        os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+        os.environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        app = create_app()
+        self.assertEqual(app.config['SQLALCHEMY_TRACK_MODIFICATIONS'], False)
+
+    def test_production_config(self):
+        """
+        Test to ensure that the application loads the production configuration.
+
+        This test sets the `FLASK_ENV` environment variable to 'production' and
+        then initializes the application. It asserts that the application's configuration
+        is correctly set for the production environment.
+        """
+        os.environ['FLASK_ENV'] = 'production'
+        os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+        os.environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        app = create_app()
+        self.assertEqual(app.config['SQLALCHEMY_TRACK_MODIFICATIONS'], False)
+
+    def test_default_config(self):
+        """
+        Test to ensure that the application loads the default configuration.
+
+        This test ensures that when the `FLASK_ENV` environment variable is not set
+        (or set to an empty string), the application initializes with the default
+        configuration. It asserts that the application's configuration matches the expected
+        default settings.
+        """
+        os.environ['FLASK_ENV'] = ''
+        os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
+        app = create_app()
+        self.assertEqual(app.config['SQLALCHEMY_TRACK_MODIFICATIONS'], False)
 
 class ProductModelTestCase(unittest.TestCase):
     """

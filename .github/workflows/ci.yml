@@ -24,7 +24,7 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    if: github.ref && (env.ENABLE_TEST_STEPS == '1')
+    if: github.ref && ( ${{ env.ENABLE_TEST_STEPS }} == '1' )
     steps:
       - name: Check out code
         uses: actions/checkout@v2

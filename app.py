@@ -42,7 +42,7 @@ def create_app(config_class=Config):
     app.register_blueprint(product_blueprint, url_prefix='/api')
 
     # Load Swagger YAML file
-    with open('swagger/swagger_definitions.yaml', 'r') as f:
+    with open('swagger/swagger_definitions.yaml', 'r', encoding='utf8') as f:
         swagger_template = yaml.safe_load(f.read())
     
     # Initialize Swagger

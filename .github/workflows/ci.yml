@@ -50,8 +50,9 @@ jobs:
       - name: Run Static Analysis
         run: |
           echo "Installing dependencies"
+          source venv/bin/activate
           python3 -m pylint ./
-          prospector --profile .prospector.yaml
+          python3 -m prospector --profile .prospector.yaml
           python3 -m bandit -r . -ll -x ./venv
 
   tests:

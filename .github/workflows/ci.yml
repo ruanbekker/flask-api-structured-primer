@@ -40,7 +40,7 @@ jobs:
           source venv/bin/activate
           pip install -r $PIP_REQUIREMENTS_FILE
         env:
-          PIP_REQUIREMENTS_FILE: ${{env.PIP_REQUIREMENTS_FILE}}
+          PIP_REQUIREMENTS_FILE: "${{ github.workspace }}/requirements.txt"
 
   static-analysis:
     needs: setup

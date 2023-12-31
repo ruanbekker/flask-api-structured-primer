@@ -42,11 +42,26 @@ jobs:
         env:
           PIP_REQUIREMENTS_FILE: "${{ github.workspace }}/requirements.txt"
 
+      - name: Upload venv for future steps
+        uses: actions/upload-artifact@v2
+        with:
+          name: venv
+          path: venv
+
   static-analysis:
     needs: setup
     runs-on: ubuntu-latest
     container: python:3.8
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      
+      - name: Download venv
+        uses: actions/download-artifact@v2
+        with:
+          name: venv
+          path: venv
+
       - name: Run Static Analysis
         run: |
           echo "Installing dependencies"

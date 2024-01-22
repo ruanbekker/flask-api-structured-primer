@@ -1,0 +1,109 @@
+---
+# Docs: 
+#  https://mccarthysean.dev/gitlab-ci-test-runner-cached
+#  https://maciejz.dev/gitlab-ci-cd-series-custom-runner-image/
+#  https://hackernoon.com/how-to-improve-your-docker-build-time-in-gitlab-ci-o5n31v6
+
+default:
+  tags:
+    - sektorlab
+
+stages:
+  - static-analysis
+  - tests
+  - coverage
+  - deploy
+
+.python-requirements:
+  script:
+    - python3 -m venv venv
+    - source venv/bin/activate
+    - pip install -r $PIP_REQUIREMENTS_FILE
+
+# yaml anchor for changes
+.changes_rule: &changes_rule
+  rules:
+    - changes:
+        - "**/*.py"
+        - "**/*.txt"
+        - "**/*.yml"
+        - "**/Dockerfile"
+        - "**/.trigger"
+
+variables:
+  FLASK_APP: "app:create_app"
+  FLASK_DEBUG: "False"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PIP_REQUIREMENTS_FILE: "$CI_PROJECT_DIR/requirements.txt"
+  PYLINT_RC: "$CI_PROJECT_DIR/.pylintrc"
+  PYDOCSTYLE_RC: "$CI_PROJECT_DIR/.pydocstyle"
+  PYCODECOVERAGE_RC: "$CI_PROJECT_DIR/.coveragerc"
+  ENABLE_TEST_STEPS: "1"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - venv
+    - .cache/pip
+
+static-analysis:
+  stage: static-analysis
+  image: 
+    name: python:3.8
+    # pull_policy: if-not-present
+  script:
+    - echo "Installing dependencies"
+    - !reference [.python-requirements, script]
+    - python3 -m pylint ./
+    - prospector --profile .prospector.yaml
+    - python3 -m bandit -r . -ll -x ./venv
+  <<: *changes_rule
+  rules:
+    - if: '$CI_COMMIT_BRANCH && ($ENABLE_TEST_STEPS == "1" || $ENABLE_UNIT_TESTS == "1")'
+
+tests:unit-tests:
+  stage: tests
+  image: 
+    name: python:3.8
+    # pull_policy: if-not-present
+  script:
+    - echo "Installing dependencies"
+    - !reference [.python-requirements, script]
+    - python3 -m unittest discover -s tests
+  <<: *changes_rule
+  rules:
+    - if: '$CI_COMMIT_BRANCH && ($ENABLE_TEST_STEPS == "1" || $ENABLE_UNIT_TESTS == "1")'
+
+coverage:code-coverage:
+  stage: coverage
+  image: 
+    name: python:3.8
+    # pull_policy: if-not-present
+  script:
+    - echo "Installing dependencies"
+    - !reference [.python-requirements, script]
+    - coverage run -m unittest discover -s ./tests
+    - coverage xml
+    - coverage report --show-missing --fail-under=90
+  <<: *changes_rule
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    expire_in: 1 week
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  rules:
+    - if: '$CI_COMMIT_BRANCH && ($ENABLE_TEST_STEPS == "1" || $ENABLE_UNIT_TESTS == "1")'
+
+deploy:staging:
+  stage: deploy
+  image: 
+    name: busybox
+    # pull_policy: if-not-present
+  script:
+    - echo "Deploying to staging environment"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: false

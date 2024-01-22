@@ -1,0 +1,102 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - '**/*.py'
+      - '**/*.txt'
+      - '**/*.yml'
+      - '**/Dockerfile'
+      - '**/.trigger'
+
+env:
+  FLASK_APP: "app:create_app"
+  FLASK_DEBUG: "False"
+  PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+  PIP_REQUIREMENTS_FILE: "${{ github.workspace }}/requirements.txt"
+  PYLINT_RC: "${{ github.workspace }}/.pylintrc"
+  PYDOCSTYLE_RC: "${{ github.workspace }}/.pydocstyle"
+  PYCODECOVERAGE_RC: "${{ github.workspace }}/.coveragerc"
+  ENABLE_TEST_STEPS: "1"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    if: github.ref
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      
+      - name: Install Dependencies
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r $PIP_REQUIREMENTS_FILE
+        env:
+          PIP_REQUIREMENTS_FILE: "${{ github.workspace }}/requirements.txt"
+
+      - name: Upload venv for future steps
+        uses: actions/upload-artifact@v2
+        with:
+          name: venv
+          path: venv
+
+  static-analysis:
+    needs: setup
+    runs-on: ubuntu-latest
+    container: python:3.8
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      
+      - name: Download venv
+        uses: actions/download-artifact@v2
+        with:
+          name: venv
+          path: venv
+
+      - name: Run Static Analysis
+        run: |
+          echo "Installing dependencies"
+          . venv/bin/activate
+          python3 -m pylint ./
+          python3 -m prospector --profile .prospector.yaml
+          python3 -m bandit -r . -ll -x ./venv
+
+  tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    container: python:3.8
+    steps:
+      - name: Run Unit Tests
+        run: |
+          echo "Installing dependencies"
+          python3 -m unittest discover -s tests
+
+  coverage:
+    needs: setup
+    runs-on: ubuntu-latest
+    container: python:3.8
+    steps:
+      - name: Run Coverage
+        run: |
+          echo "Installing dependencies"
+          coverage run -m unittest discover -s ./tests
+          coverage xml
+          coverage report --show-missing --fail-under=90
+
+  deploy:
+    needs: [static-analysis, tests, coverage]
+    runs-on: ubuntu-latest
+    container: busybox
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to Staging
+        run: echo "Deploying to staging environment"

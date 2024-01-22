@@ -2,7 +2,9 @@
 autodetect: false
 # bandit: {}
 doc-warnings: true
-ignore-paths: []
+ignore-paths: [
+  'migrations/'
+]
 ignore-patterns: []
 
 #output-format: text # json, yaml, pylint
@@ -14,9 +16,13 @@ uses:
 
 pydocstyle:
   disable:
+    - D104 # Missing docstring in public package
     - D200 # One-line docstring should fit on one line with quotes
     - D203 # 1 blank line required before class docstring
     - D212
+    - D405 # ignore capitilization for flasgger
+    - D411 # ignore blank lines for flasgger
+    - D417 # ignore argument descriptions for flasgger
     - D406 # Section name should end with a newline
     - D407 # Missing dashed underline
     - D413

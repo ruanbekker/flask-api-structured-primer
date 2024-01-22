@@ -65,6 +65,7 @@ make requests-retrieve
 ├── config.py
 ├── database
 │   └── db.py
+├── docker-compose-jobs.yaml
 ├── docker-compose.yaml
 ├── migrations
 │   ├── README
@@ -82,9 +83,10 @@ make requests-retrieve
 ├── tests
 │   └── test_product_service.py
 └── views
+    ├── healthprobe_views.py
     └── product_views.py
 
-12 directories, 25 files
+12 directories, 27 files
 ```
 
 </details>
@@ -313,6 +315,13 @@ Tests can be run as instructed above or can be run all at once using docker:
 ```bash
 make test-docker
 ```
+
+## Health Checks
+
+The application has two endpoints for healthchecks:
+
+- `/probes/health` : when application is ready
+- `/probes/ready`  : when database is ready
 
 ## Database Migrations
 

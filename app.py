@@ -7,6 +7,7 @@ from flasgger import Swagger
 from config import Config, DevelopmentConfig, ProductionConfig
 from database.db import db
 from views.product_views import product_blueprint
+from views.healthprobe_views import healthprobe_blueprint
 
 def create_app(config_class=Config):
     """
@@ -40,6 +41,7 @@ def create_app(config_class=Config):
 
     # Register routes
     app.register_blueprint(product_blueprint, url_prefix='/api')
+    app.register_blueprint(healthprobe_blueprint, url_prefix='/probes')
 
     # Load Swagger YAML file
     with open('swagger/swagger_definitions.yaml', 'r', encoding='utf8') as f:
